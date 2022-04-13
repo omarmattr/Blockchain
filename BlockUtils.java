@@ -29,6 +29,7 @@ public class BlockUtils {
         Block previousBlock = getLastBlock();
         Header header = new Header("0",previousBlock.getHash(),2);
         Block newBlock = new Block(previousBlock.getIndex()+1 ,header,data);
+        proofOfWork(newBlock);
         blockChain.add(newBlock);
     }
     public boolean isValid(){
@@ -47,5 +48,13 @@ public class BlockUtils {
     public void mineBlock() {
       addBlock();
         data = new ArrayList<>();
+    }
+    public String proofOfWork(Block block) {
+        String prefixString = new String(new char[block.getHeader().getDifficulty()]).replace('\0', '0');
+        while (!block.getHash().substring(0, block.getHeader().getDifficulty()).equals(prefixString)) {
+            block.getHeader().setNonce(block.getHeader().getNonce()+1);;
+            block.setHash(block.calculateHash());
+        }
+        return block.getHash();
     }
 }
