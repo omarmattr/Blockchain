@@ -8,25 +8,24 @@ public class BlockChain {
     public static void main(String[] args) {
         //read in file before end system
         BlockUtils blockUtils = new BlockUtils(read());
-        //add new block to blockchain
-        blockUtils.addBlock("100");
-        blockUtils.addBlock("500");
-        blockUtils.addBlock("300");
+        //add new Transaction to blockchain
+        blockUtils.addNewTransaction("100");
+        blockUtils.addNewTransaction("100");
+        blockUtils.addNewTransaction("100");
+        //mineBlock to blockchain
+        blockUtils.mineBlock();
+        blockUtils.addNewTransaction("200");
+        blockUtils.addNewTransaction("200");
+        blockUtils.mineBlock();
 
-        // this line thin return un valid blockchain when editing
-       // blockUtils.getBlockChain().get(1).setData("500");
+        // this line thin return in valid blockchain when editing
+        //  blockUtils.getBlockChain().get(1).getData().set(1,"200");
 
         //print if blockchain is valid
         System.out.println(blockUtils.isValid());
 
         //write in file before end system
         writer(blockUtils.getBlockChain());
-
-//        for (Block block :blockUtils.getBlockChain()) {
-//            System.out.println(block.getData());
-//        }
-
-
     }
 
     public static String convertToByteString(Block object) {
@@ -51,7 +50,7 @@ public class BlockChain {
         }
     }
 
-    public static  List<Block> read() {
+    public static List<Block> read() {
         Scanner s = null;
         try {
             s = new Scanner(new File("output.txt"));
@@ -65,10 +64,10 @@ public class BlockChain {
             list.add(convertFromByteString(s.next()));
         }
         s.close();
-        return  list;
+        return list;
     }
 
-    public static void writer( List<Block> blockChain) {
+    public static void writer(List<Block> blockChain) {
         File file = new File("output.txt");
         FileOutputStream fo = null;
         try {

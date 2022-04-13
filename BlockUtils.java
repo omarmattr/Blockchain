@@ -1,7 +1,9 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class BlockUtils {
     private List<Block> blockChain;
+    private List<String> data = new ArrayList<>() ;
     public List<Block> getBlockChain(){
         return  blockChain;
     }
@@ -9,7 +11,9 @@ public class BlockUtils {
         this.blockChain =blockChain;
     }
     private void createGenesisBlock(){
-        blockChain.add(new Block(0,"0","Hello"));
+        Header header = new Header("0","0",2);
+        data.add("Hello");
+        blockChain.add(new Block(0,header,data));
     }
     public Block getLastBlock(){
         if (blockChain.isEmpty()){
@@ -18,9 +22,13 @@ public class BlockUtils {
 
         return blockChain.get(blockChain.size()-1);
     }
-    public void addBlock(String data){
+    public void addNewTransaction(String transaction){
+        data.add(transaction);
+    }
+    private void addBlock(){
         Block previousBlock = getLastBlock();
-        Block newBlock = new Block(previousBlock.getIndex()+1 ,data, previousBlock.getHash());
+        Header header = new Header("0",previousBlock.getHash(),2);
+        Block newBlock = new Block(previousBlock.getIndex()+1 ,header,data);
         blockChain.add(newBlock);
     }
     public boolean isValid(){
@@ -30,10 +38,14 @@ public class BlockUtils {
             if (!currentBlock.getHash().equals(currentBlock.calculateHash())){
                 return false;
             }
-            if (!currentBlock.getPreviousHash().equals(previousBlock.getHash())){
+            if (!currentBlock.getHeader().getPreviousHash().equals(previousBlock.getHash())){
                 return false;
             }
         }
             return true;
+    }
+    public void mineBlock() {
+      addBlock();
+        data = new ArrayList<>();
     }
 }

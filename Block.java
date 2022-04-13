@@ -1,36 +1,35 @@
 import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 public class Block implements Serializable {
     private int index;
-    private Long timestamp;
-    private String data;
-    private String previousHash;
+    private Header header;
+    private List<String> data;
     private String hash;
 
-    public Block(int index, String data, String previousHash) {
+    public Block(int index, Header header, List<String> data) {
         this.index = index;
-        this.timestamp = System.currentTimeMillis();
         this.data = data;
-        this.previousHash = previousHash;
+        this.header = header;
         this.hash = calculateHash();
+    }
+
+    public Header getHeader() {
+        return header;
+    }
+
+    public void setHeader(Header header) {
+        this.header = header;
     }
 
     public void setIndex(int index) {
         this.index = index;
     }
 
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public void setData(String data) {
+    public void setData(List<String> data) {
         this.data = data;
-    }
-
-    public void setPreviousHash(String previousHash) {
-        this.previousHash = previousHash;
     }
 
     public void setHash(String hash) {
@@ -41,24 +40,16 @@ public class Block implements Serializable {
         return index;
     }
 
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public String getData() {
+    public List<String> getData() {
         return data;
-    }
-
-    public String getPreviousHash() {
-        return previousHash;
     }
 
     public String getHash() {
         return hash;
     }
 
-    public String calculateHash() {
-        String text = index + previousHash + timestamp + data;
+    public  String calculateHash() {
+        String text = index + header.getString()+ data.hashCode();
         MessageDigest digest = null;
         try {
             digest = MessageDigest.getInstance("SHA-256");
@@ -76,5 +67,8 @@ public class Block implements Serializable {
         }
         return hexString.toString();
     }
+
+
+
 
 }
